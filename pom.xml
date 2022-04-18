@@ -6,7 +6,7 @@
 
     <groupId>com.alibaba.dchain</groupId>
     <artifactId>open-api-client</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <name>open-api-client</name>
 
     <description>

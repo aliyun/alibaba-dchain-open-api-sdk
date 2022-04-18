@@ -1,15 +1,8 @@
 package com.alibaba.dchain.inner.converter;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import com.alibaba.dchain.inner.model.OpenApiRequest;
 import com.alibaba.dchain.inner.exception.OpenApiException;
+import com.alibaba.dchain.inner.model.OpenApiRequest;
 import com.alibaba.dchain.inner.utils.MapUtil;
-
-import com.google.gson.Gson;
 
 /**
  * @author : 采和

@@ -48,6 +48,9 @@ public final class ModelConverter {
             Map<String, Object> map = (Map<String, Object>)object;
             Map<String, Object> result = new HashMap<>(16);
             for (Entry<String, Object> entry : map.entrySet()) {
+                if (entry.getValue() == null) {
+                    continue;
+                }
                 result.put(entry.getKey(), parseObject(entry.getValue()));
             }
             return result;
@@ -248,13 +251,19 @@ public final class ModelConverter {
             return;
         }
         field.setAccessible(true);
-        field.set(object, value);
-        field.setAccessible(false);
+        try {
+            field.set(object, value);
+        } finally {
+            field.setAccessible(false);
+        }
     }
 
     private static Map<String, String> objectToStringInMap(Map<String, Object> map) {
         Map<String, String> result = new HashMap<>(16);
         for (Entry<String, Object> entry : map.entrySet()) {
+            if (entry.getValue() == null) {
+                continue;
+            }
             if (entry.getValue() instanceof String) {
                 result.put(entry.getKey(), (String)entry.getValue());
             } else {
@@ -271,16 +280,28 @@ public final class ModelConverter {
         try {
             for (Field field : fields) {
                 String fieldName = getMappingFieldName(field);
-                Object fieldObj = field.get(model);
+                Object fieldObj = getFieldValue(field, model);
                 if (fieldObj == null) {
                     continue;
                 }
-                result.put(fieldName, parseObject(field));
+                result.put(fieldName, parseObject(fieldObj));
             }
         } catch (Exception e) {
             throw new OpenApiException(ErrorEnum.PARSE_OBJECT_TO_MAP_ERROR, e);
         }
         return result;
+    }
+
+    private static Object getFieldValue(Field field, Object object) throws IllegalAccessException {
+        if (field.isAccessible()) {
+            return field.get(object);
+        }
+        field.setAccessible(true);
+        try {
+            return field.get(object);
+        } finally {
+            field.setAccessible(false);
+        }
     }
 
     private static String getMappingFieldName(Field field) {
