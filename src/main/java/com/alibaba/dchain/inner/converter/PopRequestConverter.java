@@ -1,5 +1,7 @@
 package com.alibaba.dchain.inner.converter;
 
+import java.util.HashMap;
+
 import com.alibaba.dchain.inner.exception.OpenApiException;
 import com.alibaba.dchain.inner.model.OpenApiRequest;
 import com.alibaba.dchain.inner.utils.MapUtil;
@@ -25,6 +27,8 @@ public final class PopRequestConverter {
         }
         if (MapUtil.isNotEmpty(request.getHeaderParam())) {
             openApiRequest.setHeaders(ModelConverter.parseMapToMapString((request.getHeaderParam())));
+        } else {
+            openApiRequest.setHeaders(new HashMap<>(16));
         }
         return openApiRequest;
     }

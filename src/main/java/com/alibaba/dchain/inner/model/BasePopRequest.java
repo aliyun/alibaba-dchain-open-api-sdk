@@ -21,9 +21,17 @@ public abstract class BasePopRequest<T extends OpenApiResponse> implements OpenA
 
     public static class PopApiInfo {
         /**
-         * the apiCode
+         * the product code of pop
+         */
+        private String productCode;
+        /**
+         * the api code of pop gateway
          */
         private String apiCode;
+        /**
+         * the api code of dchain gateway
+         */
+        private String dchainApiCode;
         /**
          * the api version
          */
@@ -48,8 +56,20 @@ public abstract class BasePopRequest<T extends OpenApiResponse> implements OpenA
          * body type, like: json
          */
         private String bodyType;
+        /**
+         * the body type of request, like: json、form
+         */
+        private String reqBodyType;
 
         public PopApiInfo() {
+        }
+
+        public String getProductCode() {
+            return productCode;
+        }
+
+        public void setProductCode(String productCode) {
+            this.productCode = productCode;
         }
 
         public String getApiCode() {
@@ -58,6 +78,14 @@ public abstract class BasePopRequest<T extends OpenApiResponse> implements OpenA
 
         public void setApiCode(String apiCode) {
             this.apiCode = apiCode;
+        }
+
+        public String getDchainApiCode() {
+            return dchainApiCode;
+        }
+
+        public void setDchainApiCode(String dchainApiCode) {
+            this.dchainApiCode = dchainApiCode;
         }
 
         public String getApiVersion() {
@@ -106,6 +134,14 @@ public abstract class BasePopRequest<T extends OpenApiResponse> implements OpenA
 
         public void setBodyType(String bodyType) {
             this.bodyType = bodyType;
+        }
+
+        public String getReqBodyType() {
+            return reqBodyType;
+        }
+
+        public void setReqBodyType(String reqBodyType) {
+            this.reqBodyType = reqBodyType;
         }
     }
 }

@@ -28,6 +28,8 @@ public enum ErrorEnum {
 
     INSTANTIATE_INSTANCE_ERROR("INSTANTIATE_INSTANCE_ERROR", "instantiate class instance error"),
 
+    BODY_TYPE_NOT_SUPPORTED("BODY_TYPE_NOT_SUPPORTED", "body type not supported"),
+
     ;
 
     private String code;

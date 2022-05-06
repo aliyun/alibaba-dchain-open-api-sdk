@@ -1,11 +1,14 @@
 package com.alibaba.dchain.inner.invoker;
 
 import java.util.Map;
+import java.util.Objects;
 
 import com.alibaba.dchain.api.pop.PopClientConfig;
-import com.alibaba.dchain.api.spi.InvokeFilter;
 import com.alibaba.dchain.inner.converter.PopRequestConverter;
 import com.alibaba.dchain.inner.converter.PopResponseConverter;
+import com.alibaba.dchain.inner.enums.BodyTypeEnum;
+import com.alibaba.dchain.inner.enums.GatewayTypeEnum;
+import com.alibaba.dchain.inner.enums.SystemHeaderEnum;
 import com.alibaba.dchain.inner.exception.ErrorEnum;
 import com.alibaba.dchain.inner.exception.OpenApiException;
 import com.alibaba.dchain.inner.model.BasePopRequest;
@@ -27,7 +30,12 @@ public class PopInvoker implements OpenApiInvoker {
 
     private Client client;
 
+    private PopClientConfig config;
+
     public PopInvoker(PopClientConfig popClientConfig) throws OpenApiException {
+
+        this.config = popClientConfig;
+
         Config popConfig = new Config();
         popConfig.setEndpoint(popClientConfig.getEndpoint());
         popConfig.setRegionId(popClientConfig.getRegionId());
@@ -49,17 +57,14 @@ public class PopInvoker implements OpenApiInvoker {
         PopApiInfo popApiInfo = ((BasePopRequest)request).findPopApiInfo();
         com.aliyun.teaopenapi.models.OpenApiRequest openApiRequest = PopRequestConverter.toPopRequest(request);
 
+        Map<String, String> headers = openApiRequest.getHeaders();
+        headers.put(SystemHeaderEnum.PRODUCT_CODE.getCode(), popApiInfo.getProductCode());
+        headers.put(SystemHeaderEnum.GATEWAY_TYPE.getCode(), GatewayTypeEnum.POP.name());
+        headers.put(SystemHeaderEnum.ENDPOINT.getCode(), config.getEndpoint());
+        headers.put(SystemHeaderEnum.DCHAIN_API_CODE.getCode(), popApiInfo.getDchainApiCode());
+
         try {
-            Map<String, ?> resultMap = client.doROARequest(
-                popApiInfo.getApiCode(),
-                popApiInfo.getApiVersion(),
-                popApiInfo.getHttpProtocol(),
-                popApiInfo.getHttpMethod(),
-                popApiInfo.getAuthType(),
-                popApiInfo.getPath(),
-                popApiInfo.getBodyType(),
-                openApiRequest,
-                new RuntimeOptions());
+            Map<String, ?> resultMap = callApi(popApiInfo, openApiRequest);
             return PopResponseConverter.toOpenApiResponse(resultMap, request.getResponseClass());
         } catch (Exception e) {
             if (e instanceof TeaException) {
@@ -76,6 +81,45 @@ public class PopInvoker implements OpenApiInvoker {
             }
             throw new OpenApiException(e);
         }
+
+    }
+
+    private Map<String, ?> callApi(PopApiInfo popApiInfo,
+        com.aliyun.teaopenapi.models.OpenApiRequest openApiRequest) throws Exception {
+        if (Objects.equals(popApiInfo.getReqBodyType(), BodyTypeEnum.JSON.getCode())) {
+            return doROARequest(popApiInfo, openApiRequest);
+        } else if (Objects.equals(popApiInfo.getReqBodyType(), BodyTypeEnum.FORM.getCode())) {
+            return doROARequestWithForm(popApiInfo, openApiRequest);
+        }
+        throw new OpenApiException(ErrorEnum.BODY_TYPE_NOT_SUPPORTED);
+    }
+
+    private Map<String, ?> doROARequest(PopApiInfo popApiInfo,
+        com.aliyun.teaopenapi.models.OpenApiRequest openApiRequest) throws Exception {
+        return client.doROARequest(
+            popApiInfo.getApiCode(),
+            popApiInfo.getApiVersion(),
+            popApiInfo.getHttpProtocol(),
+            popApiInfo.getHttpMethod(),
+            popApiInfo.getAuthType(),
+            popApiInfo.getPath(),
+            popApiInfo.getBodyType(),
+            openApiRequest,
+            new RuntimeOptions());
+    }
+
+    private Map<String, ?> doROARequestWithForm(PopApiInfo popApiInfo,
+        com.aliyun.teaopenapi.models.OpenApiRequest openApiRequest) throws Exception {
+        return client.doROARequestWithForm(
+            popApiInfo.getApiCode(),
+            popApiInfo.getApiVersion(),
+            popApiInfo.getHttpProtocol(),
+            popApiInfo.getHttpMethod(),
+            popApiInfo.getAuthType(),
+            popApiInfo.getPath(),
+            popApiInfo.getBodyType(),
+            openApiRequest,
+            new RuntimeOptions());
     }
 
 }

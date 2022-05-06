@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -28,7 +29,7 @@ public class ExtensionLoader<T> {
 
     private Map<String, Class<?>> cachedClasses;
 
-    private Map<String, T> cachedInstances = new ConcurrentHashMap<>();
+    private final Map<String, T> cachedInstances = new LinkedHashMap<>();
 
     private final Class<T> type;
 
@@ -74,10 +75,7 @@ public class ExtensionLoader<T> {
                 }
             }
         }
-        if (cachedClasses != null) {
-            return new HashMap<>(cachedClasses);
-        }
-        return Collections.emptyMap();
+        return new LinkedHashMap<>(cachedClasses);
     }
 
     @SuppressWarnings("unchecked")
@@ -95,13 +93,13 @@ public class ExtensionLoader<T> {
 
     private Map<String, Class<?>> loadExtensionClasses() throws OpenApiException {
         String fullName = PREFIX + type.getName();
-        Map<String, Class<?>> extensionClasses = new ConcurrentHashMap<>(8);
+        Map<String, Class<?>> extensionClasses = new LinkedHashMap<>(8);
         try {
             Enumeration<URL> resources = classLoader.getResources(fullName);
             while (resources.hasMoreElements()) {
                 Iterator<String> classNamesIterator = parse(type, resources.nextElement(), extensionClasses);
 
-                if (classNamesIterator.hasNext()) {
+                while (classNamesIterator.hasNext()) {
                     String className = classNamesIterator.next();
                     Class<?> cls = null;
                     try {
