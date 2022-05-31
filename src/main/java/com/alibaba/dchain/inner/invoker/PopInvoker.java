@@ -59,6 +59,7 @@ public class PopInvoker implements OpenApiInvoker {
 
         Map<String, String> headers = openApiRequest.getHeaders();
         headers.put(SystemHeaderEnum.PRODUCT_CODE.getCode(), popApiInfo.getProductCode());
+        headers.put(SystemHeaderEnum.DCHAIN_PRODUCT_CODE.getCode(), popApiInfo.getDchainApiCode());
         headers.put(SystemHeaderEnum.GATEWAY_TYPE.getCode(), GatewayTypeEnum.POP.name());
         headers.put(SystemHeaderEnum.ENDPOINT.getCode(), config.getEndpoint());
         headers.put(SystemHeaderEnum.DCHAIN_API_CODE.getCode(), popApiInfo.getDchainApiCode());

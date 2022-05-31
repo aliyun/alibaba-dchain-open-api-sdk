@@ -25,6 +25,10 @@ public abstract class BasePopRequest<T extends OpenApiResponse> implements OpenA
          */
         private String productCode;
         /**
+         * the product code of dchain
+         */
+        private String dchainProductCode;
+        /**
          * the api code of pop gateway
          */
         private String apiCode;
@@ -70,6 +74,14 @@ public abstract class BasePopRequest<T extends OpenApiResponse> implements OpenA
 
         public void setProductCode(String productCode) {
             this.productCode = productCode;
+        }
+
+        public String getDchainProductCode() {
+            return dchainProductCode;
+        }
+
+        public void setDchainProductCode(String dchainProductCode) {
+            this.dchainProductCode = dchainProductCode;
         }
 
         public String getApiCode() {

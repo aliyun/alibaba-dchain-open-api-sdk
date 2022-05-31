@@ -18,6 +18,10 @@ public enum SystemHeaderEnum {
      */
     PRODUCT_CODE("x-alibaba-pop-product-code"),
     /**
+     * Dchain产品code
+     */
+    DCHAIN_PRODUCT_CODE("x-alibaba-dchain-product-code"),
+    /**
      * 供应链api code
      */
     DCHAIN_API_CODE("x-alibaba-dchain-api-code")
