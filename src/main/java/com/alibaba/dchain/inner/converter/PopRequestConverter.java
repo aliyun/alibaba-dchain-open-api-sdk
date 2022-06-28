@@ -19,9 +19,8 @@ public final class PopRequestConverter {
         throws OpenApiException {
         com.aliyun.teaopenapi.models.OpenApiRequest openApiRequest = new com.aliyun.teaopenapi.models.OpenApiRequest();
 
-        if (MapUtil.isNotEmpty(request.getBodyParam())) {
-            openApiRequest.setBody(ModelConverter.parseObject(request.getBodyParam()));
-        }
+        openApiRequest.setBody(ModelConverter.parseObject(request.getBodyParam()));
+
         if (MapUtil.isNotEmpty(request.getQueryParam())) {
             openApiRequest.setQuery(ModelConverter.parseMapToMapString((request.getQueryParam())));
         }

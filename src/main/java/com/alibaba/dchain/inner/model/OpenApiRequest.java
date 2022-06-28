@@ -21,7 +21,7 @@ public interface OpenApiRequest<T extends OpenApiResponse> extends Serializable,
      *
      * @return
      */
-    Map<String, Object> getBodyParam();
+    Object getBodyParam();
 
     /**
      * 获取请求所需header入参
